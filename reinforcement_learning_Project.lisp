@@ -137,7 +137,7 @@
 (put isa chunk) (see isa chunk) (type isa chunk) (maxi isa chunk) (sally isa chunk) (chips isa chunk) (mother isa chunk)
 
 ;goal state chunks. You’re expected to write the goal state chunks below 
-
+(cupboard isa chunk) (oven isa chunk) (trashbin isa chunk)
 
 ;temporal order chunk. There are three seperate time points in the story:
 ; at t0 Maxi put the chips into the cupboard.
@@ -148,22 +148,21 @@
  (t0 ISA tijd t0 1 t1 2 t2 3)
 
 
-
 ;Here, you are expected to write the model's knowledge representations about the story facts (i.e., lines 140-146) based on the defined story chunk-type above.
-
-
+(fact1 ISA story subject maxi negation nil verb put object chips location cupboard time t0 type action self-ref fact1 ref nil level nil)
+(fact2 ISA story subject sally negation nil verb put object chips location oven time t1 type action self-ref fact2 ref fact3 level nil)
+(fact3 ISA story subject maxi negation nil verb see object sally location nil time t1 type perception self-ref fact3 ref fact4 level nil)
+(fact4 ISA story subject sally negation not verb see object maxi location nil time t1 type perception self-ref fact4 ref fact2 level nil)
+(fact5 ISA story subject mother negation nil verb put object chips location trashbin time t2 type action self-ref fact5 ref nil level nil)
 
 
 ;Below chunk assigns the goal at the beginning of the trial
  (goal isa goal state start type action)
 )
 
-
-
-
 ; For the Assignment 2, you are expected to write production rules to apply zero-order reasoning and gives the answer "trashbin" (as if the model reasons about the question "Where is the chips?").
 
-; Th production rule that gives the answer should also have the following functions for the output of the model:
+; The production rule that gives the answer should also have the following functions for the output of the model:
 ; To put 0 (zero) as a strategy level representing the zero-order strategy to the variable response:  !safe-eval! (push 0 *response*)  
 ; To write the name of values of the reasoning chunks: !safe-eval! (push (sdp (reasoning-zero reasoning-zero-0 reasoning-zero-0-1) :name :utility :u :at :reward) *response*)
 

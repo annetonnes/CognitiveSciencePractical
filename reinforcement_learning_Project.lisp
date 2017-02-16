@@ -125,7 +125,7 @@
 
 ; The following chunk type is for the goals and their states. 
 ; The slot "type" is for the where question (action)
-; The slot "output"  is for holding the output if the model (i.e., cupboard, oven, trashbin)
+; The slot "output"  is for holding the output of the model (i.e., cupboard, oven, trashbin)
 (chunk-type goal state type output) 
 
 
@@ -165,6 +165,32 @@
 ; The production rule that gives the answer should also have the following functions for the output of the model:
 ; To put 0 (zero) as a strategy level representing the zero-order strategy to the variable response:  !safe-eval! (push 0 *response*)  
 ; To write the name of values of the reasoning chunks: !safe-eval! (push (sdp (reasoning-zero reasoning-zero-0 reasoning-zero-0-1) :name :utility :u :at :reward) *response*)
+
+(P start-zero-order
+  =goal>
+    isa       goal
+    state     start
+==>
+  +retrieval>
+    isa       story
+    time      t2
+  =goal>
+    state     answer
+)
+
+(P answer-zero-order
+  =goal>
+    ISA       goal
+    state     answer    
+  =retrieval>
+    isa       story
+    time      t2
+    location  =location
+==>
+  -goal>
+  !output!    (=location)
+  !safe-eval! (push 0 *response*)
+)
 
 ;; The assignment will be graded in terms of the following criteria:
 ;; 1) Output

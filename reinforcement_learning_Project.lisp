@@ -163,9 +163,9 @@
 ; For the Assignment 2, you are expected to write production rules to apply zero-order reasoning and gives the answer "trashbin" (as if the model reasons about the question "Where is the chips?").
 
 ; The production rule that gives the answer should also have the following functions for the output of the model:
-; To put 0 (zero) as a strategy level representing the zero-order strategy to the variable response:  !safe-eval! (push 0 *response*)  
-; To write the name of values of the reasoning chunks: !safe-eval! (push (sdp (reasoning-zero reasoning-zero-0 reasoning-zero-0-1) :name :utility :u :at :reward) *response*)
-
+; To put 0 (zero) as a strategy level representing the zero-order strategy to the variable response:  
+;!safe-eval! (push (spp ("you should write the name of the production rule that gives the zero-order answer" 
+;"you should write the name of the first production rule of the first-order strategy") :name :utility :u :at :reward) *response*)
 (P start-zero-order
   =goal>
     isa       goal
@@ -185,11 +185,13 @@
   =retrieval>
     isa       story
     time      t2
+    type 	  action 	  
     location  =location
 ==>
   -goal>
   !output!    (=location)
   !safe-eval! (push 0 *response*)
+  !safe-eval! (push (spp (answer-zero-order) :name :utility :u :at :reward) *response*)
 )
 
 ;; The assignment will be graded in terms of the following criteria:
@@ -203,10 +205,12 @@
 ; For the Assignment 2, you're expected to write an initial utility value for the zero-order strategy below. 
 ; In the following assignments, you will also add intial utility values for the first-order and second-order strategies.
 
-
+(spp start-zero-order :u 13)
 
 ; For the Assignment 2, you're expected to write a reward value for the zero-order stategy below.
 ; In the following assignments, you will also add reward values for the first-order and second-order strategies.
+
+(spp answer-zero-order :reward 0)
 
 
 

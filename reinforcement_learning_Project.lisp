@@ -84,13 +84,13 @@
 
 (sgp 
 
-	:esc t ;  sub-symbolic level
-	:ol t ;  optimised learning
-	:rt t ;  retrieval threshold 
-	:ans t ;  instantaneous noise
-  :egs t ;  utility noise
-  :ul t ;  utility learning
-  :pas t ; permanent noise 
+	:esc  nil;  sub-symbolic level
+	:ol  nil;  optimised learning
+	:rt  0;  retrieval threshold 
+	:ans  nil;  instantaneous noise
+  :egs 0;  utility noise
+  :ul  t;  utility learning
+  :pas  nil; permanent noise 
 
 ;; The parameters below for tracking the model’s trace. You can change them if you need to turn off the details etc.
 ;; See reference manual of ACT-R for further details, which is in the “docs” folder of ACT-R’s main folder
@@ -139,6 +139,8 @@
 ;goal state chunks. You’re expected to write the goal state chunks below 
 (cupboard isa chunk) (oven isa chunk) (trashbin isa chunk)
 
+
+(start isa chunk) (answer isa chunk)
 ;temporal order chunk. There are three seperate time points in the story:
 ; at t0 Maxi put the chips into the cupboard.
 ; at t1 Sally put the chips into the oven.

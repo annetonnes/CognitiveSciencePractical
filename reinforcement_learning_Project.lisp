@@ -84,18 +84,18 @@
 
 (sgp 
 
-	:esc ;  sub-symbolic level
-	:ol  ;  optimised learning
-	:rt  ;  retrieval threshold 
-	:ans ;  instantaneous noise
-  :egs ;  utility noise
-  :ul  ;  utility learning
-  :pas ; permanent noise 
+	:esc t ;  sub-symbolic level
+	:ol t ;  optimised learning
+	:rt t ;  retrieval threshold 
+	:ans t ;  instantaneous noise
+  :egs t ;  utility noise
+  :ul t ;  utility learning
+  :pas t ; permanent noise 
 
 ;; The parameters below for tracking the model’s trace. You can change them if you need to turn off the details etc.
 ;; See reference manual of ACT-R for further details, which is in the “docs” folder of ACT-R’s main folder
 
-        :ult: t ;turn on the trace for the utilities
+        :ult t ;turn on the trace for the utilities
         :v  t   ; trace detail
         :act low  ; activation trace parameter
         :sact low ;save activation trace
@@ -149,15 +149,15 @@
 
 
 ;Here, you are expected to write the model's knowledge representations about the story facts (i.e., lines 140-146) based on the defined story chunk-type above.
-(fact1 ISA story subject maxi negation nil verb put object chips location cupboard time t0 type action self-ref fact1 ref nil level nil)
-(fact2 ISA story subject sally negation nil verb put object chips location oven time t1 type action self-ref fact2 ref fact3 level nil)
-(fact3 ISA story subject maxi negation nil verb see object sally location nil time t1 type perception self-ref fact3 ref fact4 level nil)
-(fact4 ISA story subject sally negation not verb see object maxi location nil time t1 type perception self-ref fact4 ref fact2 level nil)
-(fact5 ISA story subject mother negation nil verb put object chips location trashbin time t2 type action self-ref fact5 ref nil level nil)
+(fact1 ISA story subject maxi negation nil verb put object chips location cupboard time 1 type action self-ref fact1 ref nil level nil)
+(fact2 ISA story subject sally negation nil verb put object chips location oven time 2 type action self-ref fact2 ref fact3 level nil)
+(fact3 ISA story subject maxi negation nil verb see object sally location nil time 2 type perception self-ref fact3 ref fact4 level nil)
+(fact4 ISA story subject sally negation not verb see object maxi location nil time 2 type perception self-ref fact4 ref fact2 level nil)
+(fact5 ISA story subject mother negation nil verb put object chips location trashbin time 3 type action self-ref fact5 ref nil level nil)
 
 
 ;Below chunk assigns the goal at the beginning of the trial
- (goal isa goal state start type action)
+ (goal isa goal state start type action output nil) ;halloooo we hebben dit even aangepast om te kijken of het errors solvt
 )
 
 ; For the Assignment 2, you are expected to write production rules to apply zero-order reasoning and gives the answer "trashbin" (as if the model reasons about the question "Where is the chips?").
@@ -173,7 +173,7 @@
 ==>
   +retrieval>
     isa       story
-    time      t2
+    time      3
   =goal>
     state     answer
 )
@@ -184,7 +184,7 @@
     state     answer    
   =retrieval>
     isa       story
-    time      t2
+    time      3
     type 	  action 	  
     location  =location
 ==>

@@ -150,7 +150,7 @@
  (t0 ISA tijd t0 1 t1 2 t2 3)
 
 
-;Here, you are expected to write the model's knowledge representations about the story facts (i.e., lines 140-146) based on the defined story chunk-type above.
+;Here, you are expected to write the model's knowledge representations about the story facts (i.e., lines 154-158) based on the defined story chunk-type above.
 (fact1 ISA story subject maxi negation nil verb put object chips location cupboard time 1 type action self-ref fact1 ref nil level nil)
 (fact2 ISA story subject sally negation nil verb put object chips location oven time 2 type action self-ref fact2 ref fact3 level nil)
 (fact3 ISA story subject maxi negation nil verb see object sally location nil time 2 type perception self-ref fact3 ref fact4 level nil)
@@ -159,7 +159,7 @@
 
 
 ;Below chunk assigns the goal at the beginning of the trial
- (goal isa goal state start type action output nil) ;halloooo we hebben dit even aangepast om te kijken of het errors solvt
+ (goal isa goal state start type action output nil)
 )
 
 ; For the Assignment 2, you are expected to write production rules to apply zero-order reasoning and gives the answer "trashbin" (as if the model reasons about the question "Where is the chips?").
@@ -174,7 +174,7 @@
     state     start
 ==>
   +retrieval>
-    isa       story
+    isa       story ; retrieve the story facts at the last time-chunk
     time      3
   =goal>
     state     answer
@@ -187,13 +187,13 @@
   =retrieval>
     isa       story
     time      3
-    type 	  action 	  
-    location  =location
+    type 	    action ; make sure the type is action and not perception
+    location  =location ; get the location from the last story fact
 ==>
   -goal>
   !output!    (=location)
-  !safe-eval! (push 0 *response*)
-  !safe-eval! (push (spp (answer-zero-order) :name :utility :u :at :reward) *response*)
+  !safe-eval! (push 0 *response*) ; use zero-order reasoning
+  !safe-eval! (push (spp (answer-zero-order) :name :utility :u :at :reward) *response*) ; magic
 )
 
 ;; The assignment will be graded in terms of the following criteria:

@@ -1,10 +1,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;
-;;;;;;	REINFORCEMENT LEARNING ACT-R model in order to show the developmental transitions in reasoning about false beliefs of others. 
-;;;;;;  These stand from a child's reasoning from his/her own point of view (zero-order) to taking into consideration 
-;;;;;;  an other agent’s beliefs (first-order) and later to taking into consideration an other agent’s beliefs about 
+;;;;;;	REINFORCEMENT LEARNING ACT-R model in order to show the developmental transitions in reasoning about false beliefs of others.
+;;;;;;  These stand from a child's reasoning from his/her own point of view (zero-order) to taking into consideration
+;;;;;;  an other agent’s beliefs (first-order) and later to taking into consideration an other agent’s beliefs about
 ;;;;;;  other agents’ beliefs (second-order).
-;;;;;; 
+;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;
 ;;;;;;	Instructions on using this model:
@@ -22,7 +22,7 @@
 
 
 
-;; do experiment 1 time    
+;; do experiment 1 time
 (defun fbt (&optional who)
 
 (goal-focus goal)
@@ -30,24 +30,24 @@
       (setf *model* nil)
          (setf *model* t)
    )
-        (run 30 :real-time t) 
+        (run 30 :real-time t)
 )
 
 
-;; do experiment 100 times 
-(defun do-fbt ()  	
+;; do experiment 100 times
+(defun do-fbt ()
 	(dotimes (i 100)
-            (setf *response* nil)					 		
+            (setf *response* nil)
 			(fbt)
                (push *response* *hold-responses*)
-         )                       
+         )
 )
 
-;; do experiment nx100 times 
-(defun do-fbt-n (n)    
-	  (dotimes (i n)	
-              (setf *hold-responses* nil)                	
-                        (reset)				 		
+;; do experiment nx100 times
+(defun do-fbt-n (n)
+	  (dotimes (i n)
+              (setf *hold-responses* nil)
+                        (reset)
 			(do-fbt)
                         (write-to-file (concatenate 'string "dat-" (write-to-string i)) (nreverse *hold-responses*))
 ;(setf *hold-response* nil)
@@ -56,11 +56,11 @@
 
 ;; write results to a file
 (defun write-to-file (name lst)
-	(with-open-file 
-		(out 
-			(ensure-directories-exist 
-				(merge-pathnames 
-					(make-pathname :name name :directory '(:relative "ACTR_model_output") :type "txt")  
+	(with-open-file
+		(out
+			(ensure-directories-exist
+				(merge-pathnames
+					(make-pathname :name name :directory '(:relative "ACTR_model_output") :type "txt")
 					"~/")
                         )
 			:direction :output :if-does-not-exist :create :if-exists :supersede
@@ -70,7 +70,7 @@
          )
 )
 
-	
+
 
 (clear-all) ;; clear model settings
 
@@ -82,15 +82,15 @@
 ;; you can change the parameters once you have a complete model at the end of the course.
 ;; when you write your scientific report, you are expected to explain your decisions about the parameters.
 
-(sgp 
+(sgp
 
 	:esc  nil;  sub-symbolic level
 	:ol  nil;  optimised learning
-	:rt  0;  retrieval threshold 
+	:rt  0;  retrieval threshold
 	:ans  nil;  instantaneous noise
   :egs 0;  utility noise
   :ul  t;  utility learning
-  :pas  nil; permanent noise 
+  :pas  nil; permanent noise
 
 ;; The parameters below for tracking the model’s trace. You can change them if you need to turn off the details etc.
 ;; See reference manual of ACT-R for further details, which is in the “docs” folder of ACT-R’s main folder
@@ -121,22 +121,22 @@
 
 ;For the time sequences of the events. (You might need these but it is not necessary if you find other ways to model).
 
-(chunk-type tijd t0 t1 t2 t3 t4)     
+(chunk-type tijd t0 t1 t2 t3 t4)
 
-; The following chunk type is for the goals and their states. 
+; The following chunk type is for the goals and their states.
 ; The slot "type" is for the where question (action)
 ; The slot "output"  is for holding the output of the model (i.e., cupboard, oven, trashbin)
-(chunk-type goal state type output) 
+(chunk-type goal state type output)
 
 
 (add-dm
 
 ;The story fact chunks
-(not isa chunk) (action isa chunk) (perception isa chunk) (subject isa chunk) 
+(not isa chunk) (action isa chunk) (perception isa chunk) (subject isa chunk)
 (location isa chunk) (verb isa chunk) (object isa chunk) (negation isa chunk)
 (put isa chunk) (see isa chunk) (type isa chunk) (maxi isa chunk) (sally isa chunk) (chips isa chunk) (mother isa chunk)
 
-;goal state chunks. You’re expected to write the goal state chunks below 
+;goal state chunks. You’re expected to write the goal state chunks below
 (cupboard isa chunk) (oven isa chunk) (trashbin isa chunk)
 
 
@@ -146,7 +146,7 @@
 ; at t1 Sally put the chips into the oven.
 ; at t1 Maxi saw Sally.
 ; at t1 Sally did not see Maxi.
-; at t2 The mother put the chips into the trashbin.  
+; at t2 The mother put the chips into the trashbin.
  (t0 ISA tijd t0 1 t1 2 t2 3)
 
 
@@ -165,8 +165,8 @@
 ; For the Assignment 2, you are expected to write production rules to apply zero-order reasoning and gives the answer "trashbin" (as if the model reasons about the question "Where is the chips?").
 
 ; The production rule that gives the answer should also have the following functions for the output of the model:
-; To put 0 (zero) as a strategy level representing the zero-order strategy to the variable response:  
-;!safe-eval! (push (spp ("you should write the name of the production rule that gives the zero-order answer" 
+; To put 0 (zero) as a strategy level representing the zero-order strategy to the variable response:
+;!safe-eval! (push (spp ("you should write the name of the production rule that gives the zero-order answer"
 ;"you should write the name of the first production rule of the first-order strategy") :name :utility :u :at :reward) *response*)
 (P start-zero-order
   =goal>
@@ -183,7 +183,7 @@
 (P answer-zero-order
   =goal>
     ISA       goal
-    state     answer    
+    state     answer
   =retrieval>
     isa       story
     time      3
@@ -196,15 +196,26 @@
   !safe-eval! (push (spp (answer-zero-order) :name :utility :u :at :reward) *response*) ; magic
 )
 
+(P start-first-order
+  isa       goal
+  state     start
+==>
++retrieval>
+  isa       story ; retrieve the story facts at the last time-chunk
+  time      3
+=goal>
+  state     answer
+)
+
 ;; The assignment will be graded in terms of the following criteria:
 ;; 1) Output
 ;; 2) Cognitive Plausibility of the production rules
 ;; 3) The quality of the code document in terms of clear explanations.
 
-  
 
 
-; For the Assignment 2, you're expected to write an initial utility value for the zero-order strategy below. 
+
+; For the Assignment 2, you're expected to write an initial utility value for the zero-order strategy below.
 ; In the following assignments, you will also add intial utility values for the first-order and second-order strategies.
 
 (spp start-zero-order :u 13)
@@ -217,5 +228,3 @@
 
 
 )
-
-                                                            

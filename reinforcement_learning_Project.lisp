@@ -84,13 +84,13 @@
 
 (sgp
 
-	:esc  nil;  sub-symbolic level
-	:ol  nil;  optimised learning
-	:rt  0;  retrieval threshold
-	:ans  nil;  instantaneous noise
-  :egs 0;  utility noise
-  :ul  t;  utility learning
-  :pas  nil; permanent noise
+	:esc  t ;  sub-symbolic level
+	:ol  t ;  optimised learning
+	:rt  -5 ;  retrieval threshold
+	:ans  0 ;  instantaneous noise
+  :egs 0 ;  utility noise
+  :ul  t ;  utility learning
+  :pas  nil ; permanent noise
 
 ;; The parameters below for tracking the model’s trace. You can change them if you need to turn off the details etc.
 ;; See reference manual of ACT-R for further details, which is in the “docs” folder of ACT-R’s main folder
@@ -140,7 +140,7 @@
 (cupboard isa chunk) (oven isa chunk) (trashbin isa chunk)
 
 
-(start isa chunk) (answer isa chunk)
+(start isa chunk) (find-location isa chunk) (answer isa chunk) 
 ;temporal order chunk. There are three seperate time points in the story:
 ; at t0 Maxi put the chips into the cupboard.
 ; at t1 Sally put the chips into the oven.
@@ -197,14 +197,50 @@
 )
 
 (P start-first-order
-  isa       goal
-  state     start
+  =goal>
+    isa       goal
+    state     start
 ==>
-+retrieval>
-  isa       story ; retrieve the story facts at the last time-chunk
-  time      3
-=goal>
-  state     answer
+  +retrieval>
+    isa       story ; retrieve the story facts at the time-chunk where maxi is the subject
+    time      2
+    subject   maxi
+  =goal>
+    state     find-location
+)
+
+(P find-location-first-order
+  =goal>
+    isa       goal
+    state     find-location
+  =retrieval>
+    isa       story
+    time      2
+    subject   maxi
+    type      perception
+==>
+  +retrieval>
+    isa       story
+    time      2
+    type      action
+  =goal>
+    state     answer
+  )
+
+(P answer-first-order
+  =goal>
+    ISA       goal
+    state     answer
+  =retrieval>
+    isa       story
+    time      2
+    type      action
+    location  =location ; get the location from the last story fact
+==>
+  -goal>
+  !output!    (=location)
+  !safe-eval! (push 1 *response*) ; use zero-order reasoning
+  !safe-eval! (push (spp (answer-first-order) :name :utility :u :at :reward) *response*) ; magic
 )
 
 ;; The assignment will be graded in terms of the following criteria:
@@ -218,12 +254,14 @@
 ; For the Assignment 2, you're expected to write an initial utility value for the zero-order strategy below.
 ; In the following assignments, you will also add intial utility values for the first-order and second-order strategies.
 
-(spp start-zero-order :u 13)
+(spp answer-zero-order :u 20)
+(ssp answer-first-order :u 10)
 
 ; For the Assignment 2, you're expected to write a reward value for the zero-order stategy below.
 ; In the following assignments, you will also add reward values for the first-order and second-order strategies.
 
 (spp answer-zero-order :reward 0)
+(ssp answer-first-order :reward 5)
 
 
 

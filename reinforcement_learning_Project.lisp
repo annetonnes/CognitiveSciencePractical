@@ -98,7 +98,7 @@
         :ult t ;turn on the trace for the utilities
         :v  t   ; trace detail
         :act low  ; activation trace parameter
-        :sact low ;save activation trace
+        :sact low ; save activation trace
 
 )
 
@@ -168,6 +168,7 @@
 ; To put 0 (zero) as a strategy level representing the zero-order strategy to the variable response:
 ;!safe-eval! (push (spp ("you should write the name of the production rule that gives the zero-order answer"
 ;"you should write the name of the first production rule of the first-order strategy") :name :utility :u :at :reward) *response*)
+
 (P start-zero-order
   =goal>
     isa       goal
@@ -193,7 +194,7 @@
   -goal>
   !output!    (=location)
   !safe-eval! (push 0 *response*) ; use zero-order reasoning
-  !safe-eval! (push (spp (answer-zero-order) :name :utility :u :at :reward) *response*) ; magic
+  !safe-eval! (push (spp (answer-zero-order answer-first-order) :name :utility :u :at :reward) *response*) ; magic
 )
 
 (P start-first-order
@@ -215,8 +216,6 @@
     state     find-location
   =retrieval>
     isa       story
-    time      2
-    subject   maxi
     type      perception
 ==>
   +retrieval>
@@ -233,14 +232,13 @@
     state     answer
   =retrieval>
     isa       story
-    time      2
     type      action
-    location  =location ; get the location from the last story fact
+    location  =location ; get the location from the second story fact
 ==>
   -goal>
   !output!    (=location)
-  !safe-eval! (push 1 *response*) ; use zero-order reasoning
-  !safe-eval! (push (spp (answer-first-order) :name :utility :u :at :reward) *response*) ; magic
+  !safe-eval! (push 1 *response*) ; use first-order reasoning
+  !safe-eval! (push (spp (answer-zero-order answer-first-order) :name :utility :u :at :reward) *response*) ; magic
 )
 
 ;; The assignment will be graded in terms of the following criteria:
@@ -255,13 +253,13 @@
 ; In the following assignments, you will also add intial utility values for the first-order and second-order strategies.
 
 (spp answer-zero-order :u 20)
-(ssp answer-first-order :u 10)
+(spp answer-first-order :u 10)
 
 ; For the Assignment 2, you're expected to write a reward value for the zero-order stategy below.
 ; In the following assignments, you will also add reward values for the first-order and second-order strategies.
 
 (spp answer-zero-order :reward 0)
-(ssp answer-first-order :reward 5)
+(spp answer-first-order :reward 0)
 
 
 

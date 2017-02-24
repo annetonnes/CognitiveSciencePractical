@@ -188,7 +188,7 @@
     state     transit
   =retrieval>
     isa       story
-    time      3
+    time      3 ; HIER STAAT AL EEN KEER TIJD JELLE
     type 	    =type ; make sure the type is action and not perception
     location  =location ; get the location from the last story fact
     subject   =subject

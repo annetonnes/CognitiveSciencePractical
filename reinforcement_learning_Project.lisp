@@ -87,7 +87,7 @@
 	:esc  t ;  sub-symbolic level
 	:ol  t ;  optimised learning
 	:rt  -5 ;  retrieval threshold
-	:ans  0 ;  instantaneous noise
+	:ans  .1 ;  instantaneous noise
   :egs 0 ;  utility noise
   :ul  t ;  utility learning
   :pas  nil ; permanent noise
@@ -95,7 +95,7 @@
 ;; The parameters below for tracking the model’s trace. You can change them if you need to turn off the details etc.
 ;; See reference manual of ACT-R for further details, which is in the “docs” folder of ACT-R’s main folder
 
-        :ult t ;turn on the trace for the utilities
+        :ult nil ;turn on the trace for the utilities
         :v  t   ; trace detail
         :act low  ; activation trace parameter
         :sact low ; save activation trace
@@ -140,7 +140,8 @@
 (cupboard isa chunk) (oven isa chunk) (trashbin isa chunk)
 
 
-(start isa chunk) (find-location isa chunk) (answer isa chunk) 
+(start isa chunk) (findlocation isa chunk) (answer isa chunk) (transit isa chunk) (answer-zero isa chunk)
+(answer-first isa chunk)
 ;temporal order chunk. There are three seperate time points in the story:
 ; at t0 Maxi put the chips into the cupboard.
 ; at t1 Sally put the chips into the oven.
@@ -178,42 +179,72 @@
     isa       story ; retrieve the story facts at the last time-chunk
     time      3
   =goal>
-    state     answer
+    state     transit
+)
+
+(P transit-zero-order
+  =goal>
+    ISA       goal
+    state     transit
+  =retrieval>
+    isa       story
+    time      3
+    type 	    =type ; make sure the type is action and not perception
+    location  =location ; get the location from the last story fact
+    subject   =subject
+    ;negation  =negation 
+    verb      =verb 
+    object    =object
+    time      =time 
+  ?imaginal>
+    state     free
+==>
+  +imaginal>
+    isa       story
+    time      3
+    type      =type ; make sure the type is action and not perception
+    location  =location ; get the location from the last story fact
+    subject   =subject
+    ;negation  =negation 
+    verb     =verb 
+    object    =object
+    time      =time 
+  =goal>
+    state     answer-zero
 )
 
 (P answer-zero-order
   =goal>
-    ISA       goal
-    state     answer
-  =retrieval>
+    isa       goal
+    state     answer-zero
+  =imaginal>
     isa       story
-    time      3
-    type 	    action ; make sure the type is action and not perception
-    location  =location ; get the location from the last story fact
+    location  =location
+    time      3 
 ==>
   -goal>
   !output!    (=location)
   !safe-eval! (push 0 *response*) ; use zero-order reasoning
-  !safe-eval! (push (spp (answer-zero-order answer-first-order) :name :utility :u :at :reward) *response*) ; magic
+  !safe-eval! (push (spp (answer-zero-order start-first-order) :name :utility :u :at :reward) *response*) ; magic
 )
 
 (P start-first-order
   =goal>
     isa       goal
-    state     start
+    state     answer-zero
 ==>
   +retrieval>
     isa       story ; retrieve the story facts at the time-chunk where maxi is the subject
     time      2
     subject   maxi
   =goal>
-    state     find-location
+    state     findlocation
 )
 
 (P find-location-first-order
   =goal>
     isa       goal
-    state     find-location
+    state     findlocation
   =retrieval>
     isa       story
     type      perception
@@ -223,13 +254,13 @@
     time      2
     type      action
   =goal>
-    state     answer
+    state     answer-first
   )
 
 (P answer-first-order
   =goal>
     ISA       goal
-    state     answer
+    state     answer-first
   =retrieval>
     isa       story
     type      action
@@ -238,7 +269,7 @@
   -goal>
   !output!    (=location)
   !safe-eval! (push 1 *response*) ; use first-order reasoning
-  !safe-eval! (push (spp (answer-zero-order answer-first-order) :name :utility :u :at :reward) *response*) ; magic
+  !safe-eval! (push (spp (answer-zero-order start-first-order) :name :utility :u :at :reward) *response*) ; magic
 )
 
 ;; The assignment will be graded in terms of the following criteria:
@@ -253,13 +284,13 @@
 ; In the following assignments, you will also add intial utility values for the first-order and second-order strategies.
 
 (spp answer-zero-order :u 20)
-(spp answer-first-order :u 10)
+(spp start-first-order :u 10)
 
 ; For the Assignment 2, you're expected to write a reward value for the zero-order stategy below.
 ; In the following assignments, you will also add reward values for the first-order and second-order strategies.
 
 (spp answer-zero-order :reward 0)
-(spp answer-first-order :reward 0)
+(spp start-first-order :reward 0)
 
 
 

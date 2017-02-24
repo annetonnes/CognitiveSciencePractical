@@ -195,7 +195,6 @@
     ;negation  =negation 
     verb      =verb 
     object    =object
-    time      =time 
   ?imaginal>
     state     free
 ==>
@@ -208,7 +207,6 @@
     ;negation  =negation 
     verb     =verb 
     object    =object
-    time      =time 
   =goal>
     state     answer-zero
 )
@@ -232,10 +230,14 @@
   =goal>
     isa       goal
     state     answer-zero
+  =imaginal>
+    isa       story
+    location  =location
+    time      3 
 ==>
   +retrieval>
     isa       story ; retrieve the story facts at the time-chunk where maxi is the subject
-    time      2
+    time      2 ; retrieve time 2 because *when* Maxi got knowledge about the location, is more important than *how*.
     subject   maxi
   =goal>
     state     findlocation
@@ -255,7 +257,7 @@
     type      action
   =goal>
     state     answer-first
-  )
+)
 
 (P answer-first-order
   =goal>

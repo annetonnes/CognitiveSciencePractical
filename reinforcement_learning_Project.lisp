@@ -85,18 +85,20 @@
 (sgp
 
 	:esc  t ;  sub-symbolic level
+    ; to make sure the utility can decrease
 	:ol  t ;  optimised learning
 	:rt  -5 ;  retrieval threshold
+    ; this should be low such that it will retrieve quickly
 	:ans  .1 ;  instantaneous noise
-  :egs 0 ;  utility noise
+  :egs 3 ;  utility noise
   :ul  t ;  utility learning
   :pas  nil ; permanent noise
 
 ;; The parameters below for tracking the model’s trace. You can change them if you need to turn off the details etc.
 ;; See reference manual of ACT-R for further details, which is in the “docs” folder of ACT-R’s main folder
 
-        :ult nil ;turn on the trace for the utilities
-        :v  t   ; trace detail
+        :ult nil ; turn on the trace for the utilities
+        :v  t    ; trace detail
         :act low  ; activation trace parameter
         :sact low ; save activation trace
 
@@ -153,9 +155,9 @@
 
 ;Here, you are expected to write the model's knowledge representations about the story facts (i.e., lines 154-158) based on the defined story chunk-type above.
 (fact1 ISA story subject maxi negation nil verb put object chips location cupboard time 1 type action self-ref fact1 ref nil level nil)
-(fact2 ISA story subject sally negation nil verb put object chips location oven time 2 type action self-ref fact2 ref fact3 level nil)
-(fact3 ISA story subject maxi negation nil verb see object sally location nil time 2 type perception self-ref fact3 ref fact4 level nil)
-(fact4 ISA story subject sally negation not verb see object maxi location nil time 2 type perception self-ref fact4 ref fact2 level nil)
+(fact2 ISA story subject sally negation nil verb put object chips location oven time 2 type action self-ref fact2 ref nil level nil)
+(fact3 ISA story subject maxi negation nil verb see object sally location nil time 2 type perception self-ref fact3 ref fact2 level nil)
+(fact4 ISA story subject sally negation not verb see object maxi location nil time 2 type perception self-ref fact4 ref fact3 level nil)
 (fact5 ISA story subject mother negation nil verb put object chips location trashbin time 3 type action self-ref fact5 ref nil level nil)
 
 
@@ -188,27 +190,25 @@
     state     transit
   =retrieval>
     isa       story
-    time      3 ; HIER STAAT AL EEN KEER TIJD JELLE
-    type 	    =type ; make sure the type is action and not perception
+    time      3 
+    type 	    =type 
     location  =location ; get the location from the last story fact
     subject   =subject
-    ;negation  =negation 
     verb      =verb 
     object    =object
   ?imaginal>
     state     free
 ==>
-  +imaginal>
+  +imaginal> ; put the story fact in the imaginal buffer with all the slots
     isa       story
     time      3
-    type      =type ; make sure the type is action and not perception
-    location  =location ; get the location from the last story fact
-    subject   =subject
-    ;negation  =negation 
-    verb     =verb 
+    type      =type 
+    location  =location
+    subject   =subject 
+    verb      =verb 
     object    =object
   =goal>
-    state     answer-zero
+    state     answer-zero ; ready to answer
 )
 
 (P answer-zero-order
@@ -222,39 +222,39 @@
 ==>
   -goal>
   !output!    (=location)
-  !safe-eval! (push 0 *response*) ; use zero-order reasoning
-  !safe-eval! (push (spp (answer-zero-order start-first-order) :name :utility :u :at :reward) *response*) ; magic
+  !safe-eval! (push 0 *response*) ; used zero-order reasoning
+  !safe-eval! (push (spp (answer-zero-order start-first-order) :name :utility :u :at :reward) *response*) ; output
 )
 
 (P start-first-order
   =goal>
     isa       goal
     state     answer-zero
-  =imaginal>
+  =imaginal> ; check if the imaginal buffer contains the zero-order story fact
     isa       story
     location  =location
     time      3 
 ==>
   +retrieval>
     isa       story ; retrieve the story facts at the time-chunk where maxi is the subject
-    time      2 ; retrieve time 2 because *when* Maxi got knowledge about the location, is more important than *how*.
+    time      2 ; retrieve time instead of type, because *when* Maxi got knowledge about the location is more important than *how*
     subject   maxi
   =goal>
     state     findlocation
 )
 
-(P find-location-first-order
+(P find-location-first-order ; we need this rule because if a story fact of the type perception is retrieved, we still need to find the location
   =goal>
     isa       goal
     state     findlocation
   =retrieval>
     isa       story
-    type      perception
+    type      perception ; check if the type is perception
 ==>
   +retrieval>
     isa       story
     time      2
-    type      action
+    type      action ; get the story fact at the same time as perception, but now of type action
   =goal>
     state     answer-first
 )
@@ -270,8 +270,8 @@
 ==>
   -goal>
   !output!    (=location)
-  !safe-eval! (push 1 *response*) ; use first-order reasoning
-  !safe-eval! (push (spp (answer-zero-order start-first-order) :name :utility :u :at :reward) *response*) ; magic
+  !safe-eval! (push 1 *response*) ; used first-order reasoning
+  !safe-eval! (push (spp (answer-zero-order start-first-order) :name :utility :u :at :reward) *response*) ; output
 )
 
 ;; The assignment will be graded in terms of the following criteria:

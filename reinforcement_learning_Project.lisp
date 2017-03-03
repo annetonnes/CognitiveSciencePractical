@@ -155,10 +155,11 @@
 
 ;Here, you are expected to write the model's knowledge representations about the story facts (i.e., lines 154-158) based on the defined story chunk-type above.
 (fact1 ISA story subject maxi negation nil verb put object chips location cupboard time 1 type action self-ref fact1 ref nil level nil)
-(fact2 ISA story subject sally negation nil verb put object chips location oven time 2 type action self-ref fact2 ref nil level nil)
-(fact3 ISA story subject maxi negation nil verb see object sally location nil time 2 type perception self-ref fact3 ref fact2 level nil)
-(fact4 ISA story subject sally negation not verb see object maxi location nil time 2 type perception self-ref fact4 ref fact3 level nil)
-(fact5 ISA story subject mother negation nil verb put object chips location trashbin time 3 type action self-ref fact5 ref nil level nil)
+(fact2 ISA story subject sally negation nil verb see object maxi location nil time 2 type perception self-ref fact2 ref fact1 level nil) ; addition story fact to make explicite that sally was also in the kitchen at time 1 
+(fact3 ISA story subject sally negation nil verb put object chips location oven time 2 type action self-ref fact3 ref nil level nil)
+(fact4 ISA story subject maxi negation nil verb see object sally location nil time 2 type perception self-ref fact4 ref fact3 level nil)
+(fact5 ISA story subject sally negation not verb see object maxi location nil time 2 type perception self-ref fact5 ref fact4 level nil)
+(fact6 ISA story subject mother negation nil verb put object chips location trashbin time 3 type action self-ref fact6 ref nil level nil)
 
 
 ;Below chunk assigns the goal at the beginning of the trial
@@ -223,7 +224,7 @@
   -goal>
   !output!    (=location)
   !safe-eval! (push 0 *response*) ; used zero-order reasoning
-  !safe-eval! (push (spp (answer-zero-order start-first-order) :name :utility :u :at :reward) *response*) ; output
+  !safe-eval! (push (spp (answer-zero-order start-first-order start-second-order) :name :utility :u :at :reward) *response*) ; output
 )
 
 (P start-first-order
@@ -271,7 +272,78 @@
   -goal>
   !output!    (=location)
   !safe-eval! (push 1 *response*) ; used first-order reasoning
-  !safe-eval! (push (spp (answer-zero-order start-first-order) :name :utility :u :at :reward) *response*) ; output
+  !safe-eval! (push (spp (answer-zero-order start-first-order start-second-order) :name :utility :u :at :reward) *response*) ; output
+)
+
+
+(P start-second-order
+  =goal>
+    isa       goal
+    state     answer-zero
+  =imaginal> ; check if the imaginal buffer contains the zero-order story fact
+    isa       story
+    location  =location
+    time      3 
+==>
+  +retrieval>
+    isa       story ; retrieve the story facts at the time-chunk where maxi is the subject
+    time      2 ; retrieve time instead of type, because *when* Maxi got knowledge about the location is more important than *how*
+    subject   maxi
+  =goal>
+    state     checkperception
+)
+
+(P check-perception-second-order ; we need this rule because if a story fact of the type perception is retrieved, we still need to find the location
+  =goal>
+    isa       goal
+    state     checkperception
+  =retrieval>
+    isa       story
+    type      perception ; check if the type is perception
+==>
+  +retrieval>
+    isa       story
+    time      2
+    negation  not
+    subject   sally
+    type      perception ; get the story fact at the same time as perception, but now of type action
+  =goal>
+    state     findpreviouslocation
+)
+
+(P find-previous-location-second-order
+  =goal>
+    isa       goal
+    state     findpreviouslocation
+  =retrieval>
+    isa       story 
+    time      2 
+    negation  not
+    subject   sally
+    type      perception
+==>
+  +retrieval>
+    isa       story 
+    time      1
+    type      action
+  =goal>
+    state     findlocation
+)
+
+(P find-location-second-order
+  =goal>
+    isa       goal 
+    state     findlocation
+  =retrieval>
+    isa       story 
+    time      1
+    type      action
+    location  =location
+==>
+  -goal>
+  !output!    (=location)
+  !safe-eval! (push 1 *response*) ; used first-order reasoning
+  !safe-eval! (push (spp (answer-zero-order start-first-order start-second-order) :name :utility :u :at :reward) *response*) ; output
 )
 
 ;; The assignment will be graded in terms of the following criteria:
@@ -285,14 +357,16 @@
 ; For the Assignment 2, you're expected to write an initial utility value for the zero-order strategy below.
 ; In the following assignments, you will also add intial utility values for the first-order and second-order strategies.
 
-(spp answer-zero-order :u 20)
-(spp start-first-order :u 10)
+(spp answer-zero-order :u 30)
+(spp start-first-order :u 20)
+(spp start-second-order :u 0)
 
 ; For the Assignment 2, you're expected to write a reward value for the zero-order stategy below.
 ; In the following assignments, you will also add reward values for the first-order and second-order strategies.
 
 (spp answer-zero-order :reward 0)
 (spp start-first-order :reward 0)
+(spp start-second-order :reward 10)
 
 
 

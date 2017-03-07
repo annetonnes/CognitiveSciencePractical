@@ -98,7 +98,7 @@
 ;; See reference manual of ACT-R for further details, which is in the “docs” folder of ACT-R’s main folder
 
         :ult nil ; turn on the trace for the utilities
-        :v  t    ; trace detail
+        :v  nil   ; trace detail
         :act low  ; activation trace parameter
         :sact low ; save activation trace
 
@@ -143,7 +143,7 @@
 
 
 (start isa chunk) (findlocation isa chunk) (answer isa chunk) (transit isa chunk) (answer-zero isa chunk)
-(answer-first isa chunk)
+(answer-first isa chunk) (findpreviouslocation isa chunk) (checkperception isa chunk)
 ;temporal order chunk. There are three seperate time points in the story:
 ; at t0 Maxi put the chips into the cupboard.
 ; at t1 Sally put the chips into the oven.
@@ -342,7 +342,7 @@
 ==>
   -goal>
   !output!    (=location)
-  !safe-eval! (push 1 *response*) ; used first-order reasoning
+  !safe-eval! (push 2 *response*) ; used first-order reasoning
   !safe-eval! (push (spp (answer-zero-order start-first-order start-second-order) :name :utility :u :at :reward) *response*) ; output
 )
 
@@ -366,7 +366,7 @@
 
 (spp answer-zero-order :reward 0)
 (spp start-first-order :reward 0)
-(spp start-second-order :reward 10)
+(spp start-second-order :reward 20)
 
 
 

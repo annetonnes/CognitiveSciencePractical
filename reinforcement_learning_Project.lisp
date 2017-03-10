@@ -30,7 +30,7 @@
       (setf *model* nil)
          (setf *model* t)
    )
-        (run 30 :real-time t)
+        (run 30 :real-time nil)
 )
 
 
@@ -365,8 +365,8 @@
 ; In the following assignments, you will also add reward values for the first-order and second-order strategies.
 
 (spp answer-zero-order :reward 0)
-(spp start-first-order :reward 0)
-(spp start-second-order :reward 20)
+(spp answer-first-order :reward 0)
+(spp find-location-second-order :reward 20)
 
 
 

@@ -8,14 +8,14 @@
 #############   I will provide you the behavioral results after you submit this assignment.
 #############   Below you can find some hints to write the code for the graphs but you don't have to use the hints and you can do it in your own way, too.
 
-setwd("C:/Users/jelle/Dropbox/uni/jaar3/CognitiveSciencePractical/ACTR_model_output")  #Jelle ## set your workspace to the path where your output files are.
+#setwd("C:/Users/jelle/Dropbox/uni/jaar3/CognitiveSciencePractical/ACTR_model_output")  #Jelle ## set your workspace to the path where your output files are.
 #setwd("\Annet\...\ACTR_model_output")  #Jelle ## set your workspace to the path where your output files are.
 #setwd("\Danielle\...\ACTR_model_output")  #Jelle ## set your workspace to the path where your output files are.
-#setwd("\Hannah\...\ACTR_model_output")  #Jelle ## set your workspace to the path where your output files are.
+setwd("X:/My Documents/CSP/ACTR_model_output")  #Jelle ## set your workspace to the path where your output files are.
 
 ## You might need to use the following packages
-require(ggplot2)
-require(reshape2)
+require(ggplot2) #install.packages("name") if not installed yet
+require(reshape2) 
 require(tidyr)  
 require(plyr)
 
@@ -79,7 +79,7 @@ for (i in files) {
    }
     #now, you should combine the X and dat matrices by rows and assign it to "dat" below.
     dat<- rbind(dat, X)
-    #now, I provide you some manupilations in the data together with their explanations
+    #now, I provide you some manipulations in the data together with their explanations
     ds<-paste("",i, sep="")      #this adds " " to the name of file
     ds<-substr(ds, 1, nchar(ds)-4)#this removes the last 4 char (.txt)
     assign(ds, X)          # this assigns X to ds
@@ -122,35 +122,50 @@ lines(y.secondorder$Var1, y.secondorder$proportion, col="blue")
 # write a for loop that takes the average of V2 column for each time point (V17) and assign it to meanVectorZero
 meanVectorZero<-c(1)
 for (i in 1:100) {
-  meanVectorZero[i]<-        # write here if 17th column of dat is equal to 1,2,..100 get the mean of the second column      
+  theseRows <- which( dat$V17 == i, arr.ind=TRUE)
+  tot <- 0
+  for (j in 1:100) {
+    tot <- tot + dat[theseRows[j],2]
+  }
+  meanVectorZero[i]<-tot / 100    # write here if 17th column of dat is equal to 1,2,..100 get the mean of the second column
 }
 
 # write a for loop that takes the average of V7 column for each time point (V17) and assign it to meanVectorFirst
 
 meanVectorFirst<-c(1)
 for (i in 1:100) {
-  meanVectorFirst[i]<-   # write here if 17th column of dat is equal to 1,2,..100 get the mean of the seventh column
+  theseRows <- which( dat$V17 == i, arr.ind=TRUE)
+  tot <- 0
+  for (j in 1:100) {
+    tot <- tot + dat[theseRows[j],7]
+  }
+  meanVectorFirst[i]<-tot / 100    # write here if 17th column of dat is equal to 1,2,..100 get the mean of the second column
 }
 
 # write a for loop that takes the average of V12 column for each time point (V17) and assign it to meanVectorSecond
 
 meanVectorSecond<-c(1)
 for (i in 1:100) {
-  meanVectorSecond[i]<-  # write here if 17th column of dat is equal to 1,2,..100 get the mean of the 12th column
+  theseRows <- which( dat$V17 == i, arr.ind=TRUE)
+  tot <- 0
+  for (j in 1:100) {
+    tot <- tot + dat[theseRows[j],12]
+  }
+  meanVectorSecond[i]<-tot / 100    # write here if 17th column of dat is equal to 1,2,..100 get the mean of the second column
 } 
-}
+
 
 # combine meanVectorZero,meanVectorFirst and meanVectorSecond by column and assign it to utility Values below
-utilityValues<-
+utilityValues<- cbind(meanVectorZero, cbind(meanVectorFirst, meanVectorSecond))
 
 # create a vector called time that contains integers starting from 1 to 100 and assign to time below.
-time<-
+time<-c(1:100)
 
 # combine time and utilityValues by column and assign it to utilityValues below
-utilityValues<-
+utilityValues<-cbind(time,utilityValues)
   
 # make utilityValues a data frame and assign it to utilityValues below
-utilityValues<-
+utilityValues<-data.frame(utilityValues)
 
 
 ####### Make the utility values graph
@@ -167,8 +182,11 @@ levels(utilityValues_n$reasoning.level)[levels(utilityValues_n$reasoning.level)=
 names(utilityValues_n)[names(utilityValues_n)=="Reasoning level"]  <- "reasoning.level"
 
 ### Now, the data you will use for this graph is utilityValues_n. x is time and y is utility value. Similar to the first graph, second graph will have three lines indicating each reasoning strategies' utilities over time (1 to 100)
-
-
+##HERE! TO DO
+plot(0:100, (-5:20), type="n")
+lines(y.zeroorder$Var1, y.zeroorder$proportion, col="green")
+lines(y.firstorder$Var1, y.firstorder$proportion, col="red")
+lines(y.secondorder$Var1, y.secondorder$proportion, col="blue")
 
 
 ## Now, use multiplot function in order to present the two graphs together in 2 columns

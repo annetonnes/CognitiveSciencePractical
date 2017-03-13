@@ -112,10 +112,10 @@ y.zeroorder <- y.df[1:100,c(1,2,3,4)]
 y.firstorder <- y.df[101:200,c(1,2,3,4)]
 y.secondorder <- y.df[201:300,c(1,2,3,4)]
 
-plot(0:100, 0:100, type="n")
-lines(y.zeroorder$Var1, y.zeroorder$Freq, col="green")
-lines(y.firstorder$Var1, y.firstorder$Freq, col="red")
-lines(y.secondorder$Var1, y.secondorder$Freq, col="blue")
+plot(0:100, (0:100)/100, type="n")
+lines(y.zeroorder$Var1, y.zeroorder$proportion, col="green")
+lines(y.firstorder$Var1, y.firstorder$proportion, col="red")
+lines(y.secondorder$Var1, y.secondorder$proportion, col="blue")
     
 ####### In order to produce the utility values graph:   
         

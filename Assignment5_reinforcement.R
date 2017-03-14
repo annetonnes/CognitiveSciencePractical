@@ -1,17 +1,23 @@
 #############                   ASSIGNMENT 5 - REINFORCEMENT LEARNING
-#############   In this assignment, you are expected to produce two graphs based on the output of the model with the function (do-fbt-n 100). Therefore, you will have 100 output files, which have 100 lines in each file, representing 100 children repeated the task 100 times.
-#############   The first graph's x-axis (from 1 to 100) should present the number of repetitions of the model. The y-axis (from 0 to 1) should show the proportion of reasoning strategies in which the model used at each repetition. This means that the graph should have 3 lines for each reasoning level (i.e., 1 line for zero-order, 1 line for first-order and 1 line for second-order reasoning strategy).
-#############   The second graph's x-axis (from 1 to 100) should present the number of repetitions of the model. The y-axis should show the utility values of the production rules that you wrote in the model qith !safe-eval! functions. Thee graph should have 3 lines for each reasoning level (i.e., 1 line for zero-order reasoning strategy's utility, 1 line for first-order and 1 line for second-order reasoning strategy's utility).
+#############   In this assignment, you are expected to produce two graphs based on the output of the model with the function (do-fbt-n 100). 
+############    Therefore, you will have 100 output files, which have 100 lines in each file, representing 100 children repeated the task 100 times.
+#############   The first graph's x-axis (from 1 to 100) should present the number of repetitions of the model. 
+#############   The y-axis (from 0 to 1) should show the proportion of reasoning strategies in which the model used at each repetition. 
+#############   This means that the graph should have 3 lines for each reasoning level (i.e., 1 line for zero-order, 1 line for first-order and 1 line for second-order reasoning strategy).
+#############   The second graph's x-axis (from 1 to 100) should present the number of repetitions of the model. 
+#############   The y-axis should show the utility values of the production rules that you wrote in the model qith !safe-eval! 
+#############   functions. Thee graph should have 3 lines for each reasoning level (i.e., 1 line for zero-order reasoning strategy's utility, 
+#############   1 line for first-order and 1 line for second-order reasoning strategy's utility).
 #############   Based on the proportion of the reasoning strategies graph, you are expected to write one qualitative prediction for your model.
 #############   The prediction will be related to children's wrong answers before they start to give correct second-order answers most of the time. 
 #############   If you have more predictions, you can write them, too. 
 #############   I will provide you the behavioral results after you submit this assignment.
 #############   Below you can find some hints to write the code for the graphs but you don't have to use the hints and you can do it in your own way, too.
 
-#setwd("C:/Users/jelle/Dropbox/uni/jaar3/CognitiveSciencePractical/ACTR_model_output")  #Jelle ## set your workspace to the path where your output files are.
+setwd("C:/Users/jelle/Dropbox/uni/jaar3/CognitiveSciencePractical/ACTR_model_output")  #Jelle ## set your workspace to the path where your output files are.
 #setwd("\Annet\...\ACTR_model_output")  #Jelle ## set your workspace to the path where your output files are.
 #setwd("\Danielle\...\ACTR_model_output")  #Jelle ## set your workspace to the path where your output files are.
-setwd("X:/My Documents/CSP/ACTR_model_output")  #Jelle ## set your workspace to the path where your output files are.
+#setwd("X:/My Documents/CSP/ACTR_model_output")  #Jelle ## set your workspace to the path where your output files are.
 
 ## You might need to use the following packages
 require(ggplot2) #install.packages("name") if not installed yet
@@ -108,15 +114,8 @@ levels(y.df$Var2)[levels(y.df$Var2)=="1"] <- "First-order"
 levels(y.df$Var2)[levels(y.df$Var2)=="2"] <- "Second-order"
     
 ## now, you can make the first line graph showing the proportion of reasoning strategies over time (Var2).
-y.zeroorder <- y.df[1:100,c(1,2,3,4)]
-y.firstorder <- y.df[101:200,c(1,2,3,4)]
-y.secondorder <- y.df[201:300,c(1,2,3,4)]
+plot1 <- qplot(y.df$Var1, y.df$proportion, data = y.df, color=Var2, xlab = "Time", ylab = "Proportion", group = Var2) + geom_line() + scale_x_discrete(breaks=seq(0, 100, 5)) + labs(color='Reasoning level')
 
-plot(0:100, (0:100)/100, type="n")
-lines(y.zeroorder$Var1, y.zeroorder$proportion, col="green")
-lines(y.firstorder$Var1, y.firstorder$proportion, col="red")
-lines(y.secondorder$Var1, y.secondorder$proportion, col="blue")
-    
 ####### In order to produce the utility values graph:   
         
 # write a for loop that takes the average of V2 column for each time point (V17) and assign it to meanVectorZero
@@ -174,6 +173,8 @@ utilityValues<-data.frame(utilityValues)
 
 utilityValues_long <- gather(utilityValues, reasoning.level, utility.value, meanVectorZero:meanVectorSecond)
 
+utilityValues_long$reasoning.level <- factor(utilityValues_long$reasoning.level) 
+
 utilityValues_n <- utilityValues_long 
 levels(utilityValues_n$reasoning.level)[levels(utilityValues_n$reasoning.level)=="meanVectorZero"] <- "Zero-order"
 levels(utilityValues_n$reasoning.level)[levels(utilityValues_n$reasoning.level)=="meanVectorFirst"] <- "First-order"
@@ -182,12 +183,9 @@ levels(utilityValues_n$reasoning.level)[levels(utilityValues_n$reasoning.level)=
 names(utilityValues_n)[names(utilityValues_n)=="Reasoning level"]  <- "reasoning.level"
 
 ### Now, the data you will use for this graph is utilityValues_n. x is time and y is utility value. Similar to the first graph, second graph will have three lines indicating each reasoning strategies' utilities over time (1 to 100)
-##HERE! TO DO
-plot(0:100, (-5:20), type="n")
-lines(y.zeroorder$Var1, y.zeroorder$proportion, col="green")
-lines(y.firstorder$Var1, y.firstorder$proportion, col="red")
-lines(y.secondorder$Var1, y.secondorder$proportion, col="blue")
+plot2 <- qplot(utilityValues_n$time, utilityValues_n$utility.value, data = utilityValues_n, color=reasoning.level, xlab = "Time", ylab = "Utility value", group = reasoning.level) + geom_line() + labs(color='Reasoning level')
 
 
 ## Now, use multiplot function in order to present the two graphs together in 2 columns
+multiplot(plot1, plot2, cols = 1)
 

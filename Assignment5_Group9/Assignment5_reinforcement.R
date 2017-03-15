@@ -189,3 +189,11 @@ plot2 <- qplot(utilityValues_n$time, utilityValues_n$utility.value, data = utili
 ## Now, use multiplot function in order to present the two graphs together in 2 columns
 multiplot(plot1, plot2, cols = 1)
 
+
+##PREDICTIONS##
+#If we consider the behaviour of children the zero-order should come natural to them, but his answer is not reward. They quickly learn to find another answer. They then try the first-order answer. Since the first-order answer is also not encouraged, it does not mater to them which they pick. However, the neither are rewarded so they learn to give another answer, the second-order answer, which is the correct one. Looking at the graph we see that the second-order answer takes over rather quickly.
+
+
+
+
+
